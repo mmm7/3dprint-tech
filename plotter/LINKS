@@ -1,8 +1,11 @@
 # svg to gcode
 
-https://urish.medium.com/how-to-turn-your-3d-printer-into-a-plotter-in-one-hour-d6fe14559f1a
+Links
 
-Inkscape
+* https://urish.medium.com/how-to-turn-your-3d-printer-into-a-plotter-in-one-hour-d6fe14559f1a
+* https://www.thingiverse.com/thing:3139205
+
+## Inkscape
 
 Setup:
 
@@ -39,4 +42,12 @@ Priniting:
    * Apply
 
 
+# Slicing
+
+Links:
+* https://ultimaker.com/learn/transform-your-ultimaker-in-a-pen-plotter
+* https://www.instructables.com/Turn-Your-3D-Printer-Into-a-Plotter/
+
 # svg to stl
+
+# Import jpg to Cura
