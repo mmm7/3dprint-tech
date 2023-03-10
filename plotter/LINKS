@@ -1,0 +1,42 @@
+# svg to gcode
+
+https://urish.medium.com/how-to-turn-your-3d-printer-into-a-plotter-in-one-hour-d6fe14559f1a
+
+Inkscape
+
+Setup:
+
+* File menu → Document Properties
+   * document size a little smaller than your print bed size
+   * units: mm
+* Path menu → Object to Path
+* Extensions Menu → Gcodetools → Orientation Points…
+   * “2-point” mode
+   * Apply and then Close
+* Edit Orientation points
+   * (47,40,0)
+   * (147,40,0)
+* Extensions menu → Gcodetools → Tools Library…
+   * select “default” in “Tool types”
+   * Click Apply and then Close
+* Move the green box, then edit the text
+   * change the values for “Feed”, “Penetration Feed”, “Passing Feed”
+   * set the movement speed of the printer (the unit is mm/min)
+
+Priniting:
+
+* Extensions → Gcodetools → Path to Gcode…
+   * Options tab
+      * set “Scale along Z axis” to 1,
+      * “Offset along Z axis”: calibration minus one
+         * (I found 14.6, so I set it here to 13.6)
+   * Preferences tab
+      * set the name of the output file
+      * the path of the directory when you want it to be saved.
+      * Z safe height to a lower value, to speed up the print (I use 5)
+   * Path to Gcode tab
+      * set the Depth Function to 1
+   * Apply
+
+
+# svg to stl
