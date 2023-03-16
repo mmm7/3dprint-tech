@@ -6,8 +6,8 @@ TOL=0.1;
 module attachment() {
     difference() {
         union() {
-            translate([-14,-2,0])
-            cube([24,2,24]);
+            translate([-20,-2.5,0])
+            cube([30,2.5,24]);
             translate([-10,-8,0])
             cube([2,8,24]);
         }
@@ -76,8 +76,47 @@ module penholder_ek(d) {
 
 
 /************** Printhead attachment + penholder with wedge ****************/
-
+/*
 attachment_ek();
 
 translate([0,10,0])
 penholder_ek(d=10);
+*/
+
+module penholder_tube_screws() {
+    // Holes for the screws.
+    rotate([0,0,180+45])
+    translate([0,-50,0]) rotate([90,0,0])
+        cylinder(d=2.75, h=100, center=true);
+    rotate([0,0,180-45])
+    translate([0,-50,0]) rotate([90,0,0])
+        cylinder(d=2.75, h=100, center=true);
+}
+
+module penholder_tube(d, h) {
+    union() {
+        translate([0,0,-50]) cylinder(d=d, h=h+100);
+        hull () {
+            translate([0,0,2]) cylinder(d=d, h=h-4);
+            translate([0,0,5]) cylinder(d=d+1, h=h-10);
+        }
+        translate([0,0,10]) penholder_tube_screws();
+        translate([0,0,h-5]) penholder_tube_screws();
+    }
+}
+
+difference() {
+    union() {
+        attachment();
+        translate([5,4,0]) cylinder(d=7.2+4, h=55);
+        translate([-20,5.7,0]) cylinder(d=10.5+4, h=55);
+        hull() {
+            translate([-20,5.7,0]) cylinder(d=10.5+4, h=24);
+            translate([-20,-2.5,0]) cube([0.01,2.5,24]);
+        }
+    }
+    union() {
+        translate([5,4,0]) penholder_tube(d=7.2, h=55);
+        translate([-20,5.7,0]) penholder_tube(d=10.5, h=55);
+    }
+}
