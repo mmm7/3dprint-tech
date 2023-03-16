@@ -1,0 +1,119 @@
+# Creality Ender 3 S1 on Ubuntu 22.04 LTS
+
+## Installation
+
+### Problem: Collision with Braille reader
+
+https://stackoverflow.com/questions/70123431/why-would-ch341-uart-is-disconnected-from-ttyusb
+
+```
+$ cat /etc/issue
+Ubuntu 22.04.1 LTS \n \l
+
+$ lsusb
+Bus 006 Device 002: ID 1a86:7523 QinHeng Electronics CH340 serial converter
+
+$ dmesg
+[249882.779330] usb 6-1: new full-speed USB device number 2 using uhci_hcd
+[249882.966366] usb 6-1: New USB device found, idVendor=1a86, idProduct=7523, bcdDevice= 2.64
+[249882.966376] usb 6-1: New USB device strings: Mfr=0, Product=2, SerialNumber=0
+[249882.966380] usb 6-1: Product: USB Serial
+[249883.608905] usbcore: registered new interface driver usbserial_generic
+[249883.608927] usbserial: USB Serial support registered for generic
+[249883.624615] usbcore: registered new interface driver ch341
+[249883.624640] usbserial: USB Serial support registered for ch341-uart
+[249883.624667] ch341 6-1:1.0: ch341-uart converter detected
+[249883.644929] usb 6-1: ch341-uart converter now attached to ttyUSB0
+[249883.795258] input: PC Speaker as /devices/platform/pcspkr/input/input15
+[249884.330431] input: BRLTTY 6.4 Linux Screen Driver Keyboard as /devices/virtual/input/input16
+[249884.340364] usb 6-1: usbfs: interface 0 claimed by ch341 while 'brltty' sets config #1
+[249884.359573] ch341-uart ttyUSB0: ch341-uart converter now disconnected from ttyUSB0
+[249884.359875] ch341 6-1:1.0: device disconnected
+
+$ dpkg -l | grep brltty
+ii  brltty                                     6.4-4ubuntu3                               amd64        Access software for a blind person using a braille display
+
+$ grep 7523 /usr/lib/udev/rules.d/85-brltty.rules
+# Device: 1A86:7523
+ENV{PRODUCT}=="1a86/7523/*", ENV{BRLTTY_BRAILLE_DRIVER}="bm", GOTO="brltty_usb_run"
+```
+
+Solution:
+
+```
+$ sudo apt-get remove brltty
+$ sudo udevadm control --reload-rules
+```
+
+## Disconnect / Reconnect
+
+https://askubuntu.com/questions/645/how-do-you-reset-a-usb-device-from-the-command-line
+
+```
+sudo sh -c "echo 0 > /sys/bus/usb/devices/6-1/authorized"
+sudo sh -c "echo 1 > /sys/bus/usb/devices/6-1/authorized"
+```
+
+```
+$ dmesg
+[251928.125962] ch341 6-1:1.0: ch341-uart converter detected
+[251928.135028] usb 6-1: ch341-uart converter now attached to ttyUSB0
+[251928.135167] usb 6-1: authorized to connect
+```
+
+## Permissions
+
+```
+$ ls -la /dev/ttyUSB0 
+crw-rw---- 1 root dialout 188, 0 Mär  5 17:21 /dev/ttyUSB0
+$ groups 
+adm cdrom sudo dip video plugdev lpadmin sambashare
+
+$ sudo usermod -a -G dialout $USER
+$ logout
+[...]
+$ groups
+adm dialout cdrom sudo dip video plugdev lpadmin sambashare
+```
+
+# Interactive
+
+## Terminal stty
+
+```
+$ stty < /dev/ttyUSB0
+speed 9600 baud; line = 0;
+-brkint -imaxbel
+
+$ stty -F /dev/ttyUSB0 115200
+
+$ stty < /dev/ttyUSB0
+speed 115200 baud; line = 0;
+min = 100; time = 2;
+-icrnl -imaxbel
+-opost -onlcr
+-isig -icanon -echo
+```
+
+Terminal 1:
+
+```
+$ cat -v < /dev/ttyUSB0
+ok T:21.89 /0.00 B:16.29 /0.00 @:0 B@:0 FAN0@:0 FAN1@:0
+X:74.60 Y:122.70 Z:20.60 E:0.00 Count X:5968 Y:9816 Z:8240
+ok
+```
+
+Terminal 2:
+
+```
+$ echo "M105" >> /dev/ttyUSB0  # Get temperature
+$ echo "M114" >> /dev/ttyUSB0  # Get position
+```
+
+## picocom
+
+```
+$ sudo apt install picocom
+$ picocom --baud 115200 --echo /dev/ttyUSB0 --imap lfcrlf
+```
