@@ -83,6 +83,11 @@ translate([0,10,0])
 penholder_ek(d=10);
 */
 
+/************** Printhead attachment + two tubes ****************/
+
+FRONT = 10.5;
+REAR = 7.2;
+
 module penholder_tube_screws() {
     // Holes for the screws.
     rotate([0,0,180+45])
@@ -108,15 +113,15 @@ module penholder_tube(d, h) {
 difference() {
     union() {
         attachment();
-        translate([5,4,0]) cylinder(d=7.2+4, h=55);
-        translate([-20,5.7,0]) cylinder(d=10.5+4, h=55);
+        translate([5,REAR/2+0.5,0]) cylinder(d=REAR+4, h=55);
+        translate([-20,FRONT/2+0.5,0]) cylinder(d=FRONT+4, h=55);
         hull() {
-            translate([-20,5.7,0]) cylinder(d=10.5+4, h=24);
+            translate([-20,FRONT/2+0.5,0]) cylinder(d=FRONT+4, h=24);
             translate([-20,-2.5,0]) cube([0.01,2.5,24]);
         }
     }
     union() {
-        translate([5,4,0]) penholder_tube(d=7.2, h=55);
-        translate([-20,5.7,0]) penholder_tube(d=10.5, h=55);
+        translate([5,REAR/2+0.5,0]) penholder_tube(d=REAR, h=55);
+        translate([-20,FRONT/2+0.5,0]) penholder_tube(d=FRONT, h=55);
     }
 }
