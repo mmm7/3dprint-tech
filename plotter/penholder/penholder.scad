@@ -85,10 +85,7 @@ penholder_ek(d=10);
 
 /************** Printhead attachment + two tubes ****************/
 
-FRONT = 10.5;
-REAR = 7.2;
-
-module penholder_tube_screws() {
+module _penholder_tube_screws() {
     // Holes for the screws.
     rotate([0,0,180+45])
     translate([0,-50,0]) rotate([90,0,0])
@@ -98,30 +95,34 @@ module penholder_tube_screws() {
         cylinder(d=2.75, h=100, center=true);
 }
 
-module penholder_tube(d, h) {
+module _penholder_tube(d, h) {
     union() {
         translate([0,0,-50]) cylinder(d=d, h=h+100);
         hull () {
             translate([0,0,2]) cylinder(d=d, h=h-4);
             translate([0,0,5]) cylinder(d=d+1, h=h-10);
         }
-        translate([0,0,10]) penholder_tube_screws();
-        translate([0,0,h-5]) penholder_tube_screws();
+        translate([0,0,10]) _penholder_tube_screws();
+        translate([0,0,h-5]) _penholder_tube_screws();
     }
 }
 
-difference() {
-    union() {
-        attachment();
-        translate([5,REAR/2+0.5,0]) cylinder(d=REAR+4, h=55);
-        translate([-20,FRONT/2+0.5,0]) cylinder(d=FRONT+4, h=55);
-        hull() {
-            translate([-20,FRONT/2+0.5,0]) cylinder(d=FRONT+4, h=24);
-            translate([-20,-2.5,0]) cube([0.01,2.5,24]);
+module penholder_double(front, rear) {
+    difference() {
+        union() {
+            attachment();
+            translate([5,rear/2+0.5,0]) cylinder(d=rear+4, h=55);
+            translate([-20,front/2+0.5,0]) cylinder(d=front+4, h=55);
+            hull() {
+                translate([-20,front/2+0.5,0]) cylinder(d=front+4, h=24);
+                translate([-20,-2.5,0]) cube([0.01,2.5,24]);
+            }
+        }
+        union() {
+            translate([5,rear/2+0.5,0]) _penholder_tube(d=rear, h=55);
+            translate([-20,front/2+0.5,0]) _penholder_tube(d=front, h=55);
         }
     }
-    union() {
-        translate([5,REAR/2+0.5,0]) penholder_tube(d=REAR, h=55);
-        translate([-20,FRONT/2+0.5,0]) penholder_tube(d=FRONT, h=55);
-    }
 }
+
+penholder_double(front=7.3, rear=8.2);
