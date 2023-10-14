@@ -1,0 +1,28 @@
+Firmware version (creality)
+V3.0.4_C
+
+
+ARM
+STM32F401
+
+$ sudo fdisk -l /dev/sdb
+Disk /dev/sdb: 7.49 GiB, 8026849280 bytes, 15677440 sectors
+Disk model: STORAGE DEVICE  
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xca2193ad
+
+Device     Boot Start      End  Sectors  Size Id Type
+/dev/sdb1        8192 15677439 15669248  7.5G  c W95 FAT32 (LBA)
+
+
+Creality Firmware:
+https://www.creality.com/pages/download-ender-3-s1
+
+Professional Firmware:
+https://github.com/mriscoc/Ender3V2S1
+
+
+Copy the .bin file to a folder named STM32F4_UPDATE at the root of the card
