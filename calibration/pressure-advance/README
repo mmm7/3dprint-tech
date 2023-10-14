@@ -1,0 +1,9 @@
+https://ellis3dp.com/Pressure_Linear_Advance_Tool/
+
+For the Ender3 S1 a firmware update was necessary.
+
+https://github.com/mriscoc/Special_Configurations/releases
+Ender3S1-F4-LA-20230904.bin
+
+The range 0..0.08 was also too narrow.
+
